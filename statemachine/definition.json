@@ -1,0 +1,32 @@
+{
+    "Comment": "State machine that processes encounter instructions",
+    "StartAt": "ProcessInstruction",
+    "QueryLanguage": "JSONata",
+    "States": {
+        "ProcessInstruction": {
+            "Type": "Task",
+            "Resource": "${ProcessInstructionFunctionArn}",
+            "Next": "GenerateMessage",
+            "Assign": {
+                "encounter_id": "{% $states.input.encounterId %}",
+                "player_id": "{% $states.input.playerId %}",
+                "instruction": "{% $states.input.instruction %}"
+            },
+            "Arguments": {
+                "encounter_id": "{% $states.input.encounterId %}",
+                "player_id": "{% $states.input.playerId %}",
+                "instruction": "{% $states.input.instruction %}"
+            }
+        },
+        "GenerateMessage": {
+            "Type": "Task",
+            "Resource": "${GenerateMessageFunctionArn}",
+            "End": true,
+            "Arguments": {
+                "encounter_id": "{% $encounter_id %}",
+                "player_id": "{% $player_id %}",
+                "instruction": "{% $instruction %}"
+            }
+        }
+    }
+}
